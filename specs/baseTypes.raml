@@ -1,0 +1,24 @@
+#%RAML 1.0 Library
+
+types:
+  Colors:
+    type: string
+    enum: [ red, green, yellow ]
+  Color:
+    type: object
+    discriminator: k.ind
+    properties:
+      k.ind: string
+      hex : string
+  Animal:
+    type: object
+    discriminator: kind
+    properties:
+      eyeColor : Color[]
+      id: number
+      idOptional?: number
+      kind: string
+      optional?: string
+  Sex:
+    type: string
+    enum: [ male, female, other ]

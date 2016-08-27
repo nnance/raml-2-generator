@@ -1,0 +1,138 @@
+#%RAML 1.0
+title: Simple RAML 1.0 API
+version: v1
+baseUri: http://api.samplehost.com
+
+uses:
+  lib: baseTypes.raml
+
+types:
+  Vehicle:
+    type: object
+    properties:
+      make: string
+      model: string
+      color?: string
+  Legs:
+    type: integer
+    enum: [ 1, 2, 3, 4 ]
+  RamlMap:
+    type: object
+    properties:
+      []:
+        type: Blue
+  RamlMapHolder:
+    type: object
+    properties:
+      map: RamlMap
+  Blue:
+    type: lib.Color
+    properties:
+      shade: string
+  Red:
+    type: lib.Color
+    properties:
+      shade: string
+  Food:
+    type: object
+    discriminator: kind
+    properties:
+      name: string
+      kind: string
+      calories: integer
+      isVegetarian: boolean
+      weight: number
+  -Apple:
+    type: Food
+    properties:
+      color: lib.Colors
+  Dog:
+    type: lib.Animal
+    properties:
+      name: string
+      eats: Food[]
+      favoriteFood: Food
+      sex: lib.Sex
+      legs: Legs
+      bodyfatPercentage:
+        type: number
+        enum: [ 0, 5, 10 ]
+      nailsPerPaw: number[]
+
+resourceTypes:
+  getAnimals:
+    get:
+      headers:
+        authToken:
+          type: string
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.Animal[]
+
+  getAnimal:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.Animal
+
+/animals:
+  type: getAnimals
+
+  /{animalId}:
+    type: getAnimal
+    uriParameters:
+      animalId: integer
+
+/users:
+  get:
+    headers:
+      authToken:
+      animal:
+        type: lib.Animal
+      favoriteFood:
+        type: Food[]
+    queryParameters:
+      animal:
+        description: Specify the page that you want to retrieve
+        type: lib.Animal
+      eats:
+        type: Food[]
+      color?:
+        type: string
+  post:
+    headers:
+      androidId:
+      list:
+        type: number[]
+    body:
+      application/json:
+        type: object
+        properties:
+          groupName:
+          deptCode:
+            type: number
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              animals: lib.Animal[]
+      400:
+        body:
+          application/json:
+            type: object
+            properties:
+              animal: lib.Animal
+      500:
+         body:
+           application/json:
+             type: object
+             properties:
+               groupName:
+               deptCode:
+                 type: number
